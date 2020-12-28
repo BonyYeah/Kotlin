@@ -18,11 +18,11 @@ import java.util.ArrayList
 /**
  * Created by Bony on 12/25/20.
  */
-class LessonAdapter : RecyclerView.Adapter<LessonAdapter.LessonViewHolder>() {
-    private var list: MutableList<Lesson> = ArrayList()
+internal class LessonAdapter : RecyclerView.Adapter<LessonAdapter.LessonViewHolder>() {
+    private var list: List<Lesson> = ArrayList()
 
     fun updateAndNotify(list: List<Lesson>) {
-        this.list = list.toMutableList()
+        this.list = list
         notifyDataSetChanged()
     }
 
@@ -43,27 +43,18 @@ class LessonAdapter : RecyclerView.Adapter<LessonAdapter.LessonViewHolder>() {
      * 静态内部类
      */
     class LessonViewHolder internal constructor(itemView: View) : BaseViewHolder(itemView) {
-        fun onBind(lesson: Lesson) {
-            var date = lesson.getDate()
-            if (date == null) {
-                date = "日期待定"
-            }
-            setText(id.tv_date, date)
-            setText(id.tv_content, lesson.getContent())
-            val state = lesson.getState()
-            if (state != null) {
-                setText(id.tv_state, state.stateName())
-                val colorRes: Int = when (state) {
-                    PLAYBACK -> {
-
-                        // 即使在 {} 中也是需要 break 的。
-                        color.playback
-                    }
+        internal fun onBind(lesson: Lesson) {
+            setText(id.tv_date, lesson.date ?: "日期待定")
+            setText(id.tv_content, lesson.content)
+            lesson.state?.let {
+                setText(id.tv_state, it.stateName())
+                val colorRes: Int = when (it) {
+                    PLAYBACK -> color.playback
                     LIVE -> color.live
                     WAIT -> color.wait
                 }
                 val backgroundColor: Int = itemView.context.getColor(colorRes)
-                getView<TextView>(id.tv_state)!!.setBackgroundColor(backgroundColor)
+                getView<TextView>(id.tv_state).setBackgroundColor(backgroundColor)
             }
         }
 

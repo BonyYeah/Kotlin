@@ -15,7 +15,7 @@ class LessonPresenter(private var activity: LessonActivity) {
         private const val LESSON_PATH = "lessons"
     }
 
-    private var lessons: MutableList<Lesson> = ArrayList()
+    private var lessons: List<Lesson> = ArrayList()
 
     private val type = object : TypeToken<List<Lesson?>?>() {}.type
 
@@ -33,13 +33,9 @@ class LessonPresenter(private var activity: LessonActivity) {
     }
 
     fun showPlayback() {
-        val playbackLessons: MutableList<Lesson> = java.util.ArrayList()
-        for (lesson in lessons) {
-            if (lesson.getState() === PLAYBACK) {
-                playbackLessons.add(lesson)
-            }
-        }
-        activity.showResult(playbackLessons)
+        activity.showResult(lessons.filter {
+            it.state === PLAYBACK
+        })
     }
 
 }

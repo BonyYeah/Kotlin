@@ -11,15 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.core.BaseView
 import com.example.lesson.entity.Lesson
+import kotlin.reflect.KProperty
 
 /**
  * Created by Bony on 12/24/20.
  */
 class LessonActivity : AppCompatActivity(), BaseView<LessonPresenter>, Toolbar.OnMenuItemClickListener {
 
-    private val lessonPresenter = LessonPresenter(this)
 
-    override fun getPresenter(): LessonPresenter = lessonPresenter
+    override val lessonPresenter: LessonPresenter by lazy { LessonPresenter(this) }
 
     private val lessonAdapter = LessonAdapter()
 
@@ -33,25 +33,28 @@ class LessonActivity : AppCompatActivity(), BaseView<LessonPresenter>, Toolbar.O
         toolbar.inflateMenu(R.menu.menu_lesson)
         toolbar.setOnMenuItemClickListener(this)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.list)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = lessonAdapter
-        recyclerView.addItemDecoration(DividerItemDecoration(this, LinearLayout.VERTICAL))
+        findViewById<RecyclerView>(R.id.list).run {
+            layoutManager = LinearLayoutManager(this@LessonActivity)
+            adapter = lessonAdapter
+            addItemDecoration(DividerItemDecoration(this@LessonActivity, LinearLayout.VERTICAL))
+        }
 
-        refreshLayout = findViewById(R.id.swipe_refresh_layout)
-        refreshLayout.setOnRefreshListener { getPresenter().fetchData() }
-        refreshLayout.isRefreshing = true
+        findViewById<SwipeRefreshLayout>(R.id.swipe_refresh_layout).run {
+            setOnRefreshListener { lessonPresenter.fetchData() }
+            isRefreshing = true
+            refreshLayout = this
+        }
 
-        getPresenter().fetchData()
+        lessonPresenter.fetchData()
     }
 
-    fun showResult(lessons:List<Lesson>){
+    fun showResult(lessons: List<Lesson>) {
         lessonAdapter.updateAndNotify(lessons)
         refreshLayout.isRefreshing = false
     }
 
     override fun onMenuItemClick(item: MenuItem?): Boolean {
-        getPresenter().showPlayback()
+        lessonPresenter.showPlayback()
         return false
     }
 }

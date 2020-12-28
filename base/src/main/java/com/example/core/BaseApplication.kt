@@ -7,10 +7,12 @@ import android.content.Context
  * Created by Bony on 12/24/20.
  */
 class BaseApplication : Application() {
-    companion object {
-        private var currentApplication: Context? = null
 
-        fun currentApplication(): Context = currentApplication!!
+    companion object {
+//        @JvmStatic
+//        @get:JvmName("currentApplication")
+        lateinit var currentApplication: Context
+            private set
     }
 
     override fun attachBaseContext(base: Context?) {

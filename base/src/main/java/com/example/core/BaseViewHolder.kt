@@ -12,13 +12,13 @@ import java.util.HashMap
 abstract class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val viewHashMap: MutableMap<Int, View?> = HashMap()
 
-    protected open fun <T : View?> getView(@IdRes id: Int): T? {
+    protected open fun <T : View> getView(@IdRes id: Int): T {
         var view = viewHashMap[id]
         if (view == null) {
             view = itemView.findViewById(id)
             viewHashMap[id] = view
         }
-        return view as T?
+        return view as T
     }
 
     protected open fun setText(@IdRes id: Int, text: String?) {

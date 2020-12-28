@@ -11,7 +11,6 @@ import com.example.app.widget.CodeView
 import com.example.core.utils.CacheUtils
 import com.example.core.utils.Utils
 import com.example.lesson.LessonActivity
-import com.example.lesson.entity.Lesson
 
 /**
  * Created by Bony on 12/24/20.
@@ -33,8 +32,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         etPassword = findViewById(R.id.et_password)
         etCode = findViewById(R.id.et_code)
 
-        etUsername.setText(CacheUtils.get(usernameKey))
-        etPassword.setText(CacheUtils.get(passwordKey))
+        etUsername.setText(CacheUtils[usernameKey])
+        etPassword.setText(CacheUtils[passwordKey])
 
         val btnLogin = findViewById<Button>(R.id.btn_login)
         val imgCode = findViewById<CodeView>(R.id.code_view)
@@ -59,17 +58,17 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         if (verify(user)) {
             CacheUtils.save(usernameKey, username)
             CacheUtils.save(passwordKey, password)
-            startActivity(Intent(this@MainActivity,LessonActivity::class.java))
+            startActivity(Intent(this@MainActivity, LessonActivity::class.java))
         }
     }
 
     private fun verify(user: User): Boolean {
-        if (user.username != null && user.username!!.length < 4) {
+        if (user.username?.length ?: 0 < 4) {
             Utils.toast("用户名不合法")
             return false
         }
 
-        if (user.password != null && user.password!!.length < 4) {
+        if (user.password?.length ?: 0 < 4) {
             Utils.toast("密码不合法")
             return false
         }

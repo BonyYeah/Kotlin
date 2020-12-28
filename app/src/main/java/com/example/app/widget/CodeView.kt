@@ -16,24 +16,14 @@ import java.util.Random
 /**
  * Created by Bony on 12/24/20.
  */
-class CodeView : AppCompatTextView {
-    constructor(context: Context) : this(context, null)
+class CodeView(context: Context, attrs: AttributeSet? = null) : AppCompatTextView(context, attrs) {
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
-        setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
-        gravity = Gravity.CENTER
-        setBackgroundColor(getContext().getColor(R.color.colorPrimary))
-        setTextColor(Color.WHITE)
-
-        paint.isAntiAlias = true
-        paint.style = STROKE
-        paint.color = getContext().getColor(R.color.colorAccent)
-        paint.strokeWidth = dp2px(6f)
-
-        updateCode()
+    private val paint = Paint().apply {
+        isAntiAlias = true
+        style = STROKE
+        color = getContext().getColor(R.color.colorAccent)
+        strokeWidth = 6f.dp2px()
     }
-
-    private val paint = Paint()
 
     private val codeList = listOf(
         "kotlin",
@@ -48,12 +38,19 @@ class CodeView : AppCompatTextView {
 
     fun updateCode() {
         val random = Random().nextInt(codeList.size)
-        val code = codeList[random]
-        text = code
+        text = codeList[random]
     }
 
     override fun onDraw(canvas: Canvas?) {
         canvas?.drawLine(0f, height.toFloat(), width.toFloat(), 0f, paint)
         super.onDraw(canvas)
+    }
+
+    init {
+        setTextSize(TypedValue.COMPLEX_UNIT_SP, 18f)
+        gravity = Gravity.CENTER
+        setBackgroundColor(getContext().getColor(R.color.colorPrimary))
+        setTextColor(Color.WHITE)
+        updateCode()
     }
 }
